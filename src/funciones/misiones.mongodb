@@ -1,0 +1,234 @@
+// ========================================
+// BESTIARIO DE AZEROTH DEL WOW
+// Base de Datos: MongoDB-MONGOATLAS
+// ========================================
+
+use('bestiario');
+
+// Limpiar colección si existe
+db.criaturas.drop();
+
+print("=== INICIANDO BESTIARIO DE AZEROTH ===\n");
+
+// ========================================
+// CREATE - INSERCIÓN DE CRIATURAS
+// ========================================
+
+// Insertar una criatura con insertOne()
+db.criaturas.insertOne({
+  nombre: "Deathwing",
+  raza: "Dragón Negro",
+  faccion: "Aspecto de la Muerte",
+  nivel_peligro: 10,
+  localizacion: "Espina Negra",
+  rol: "Raid Boss",
+  habilidades: ["Cataclismo", "Aliento de Lava", "Placas de Elementium"],
+  estadisticas: {
+    salud: 500000,
+    poder: 85000,
+    armadura: 95
+  },
+  tipo_ataque: "Cuerpo a cuerpo y Hechizos",
+  expansion: "Cataclysm",
+  es_jefe: true
+});
+
+print("Deathwing agregado\n");
+
+// Insertar múltiples criaturas con insertMany()
+db.criaturas.insertMany([
+  {
+    nombre: "Arthas Menethil",
+    raza: "Humano No-Muerto",
+    faccion: "Azote",
+    nivel_peligro: 10,
+    localizacion: "Ciudadela de la Corona de Hielo",
+    rol: "Raid Boss",
+    habilidades: ["Filo de Hielo", "Furia del Rey Exánime", "Detonar Alma"],
+    estadisticas: {
+      salud: 450000,
+      poder: 80000,
+      armadura: 90
+    },
+    tipo_ataque: "Cuerpo a cuerpo",
+    titulo: "El Rey Exánime",
+    expansion: "Wrath of the Lich King",
+    es_jefe: true,
+    arma_legendaria: "Frostmourne"
+  },
+  {
+    nombre: "Murloc",
+    raza: "Murloc",
+    faccion: "Neutral Hostil",
+    nivel_peligro: 2,
+    localizacion: "Bosque de Elwynn",
+    rol: "Criatura común",
+    habilidades: ["Golpe de aleta", "Llamar refuerzos"],
+    estadisticas: {
+      salud: 150,
+      poder: 50,
+      armadura: 10
+    },
+    tipo_ataque: "Cuerpo a cuerpo",
+    expansion: "Classic",
+    es_jefe: false,
+    sonido_caracteristico: "Mrglglglgl!"
+  },
+  {
+    nombre: "Illidan Tempestira",
+    raza: "Elfo Nocturno Demonio",
+    faccion: "Illidari",
+    nivel_peligro: 9,
+    localizacion: "Templo Oscuro",
+    rol: "Raid Boss",
+    habilidades: ["Ojo de Sargeras", "Metamorfosis", "Danza de la Espada"],
+    estadisticas: {
+      salud: 420000,
+      poder: 75000,
+      armadura: 85
+    },
+    tipo_ataque: "Cuerpo a cuerpo y Hechizos",
+    titulo: "El Traidor",
+    expansion: "The Burning Crusade",
+    es_jefe: true,
+    armas: ["Glaives de Azzinoth"],
+    frase_iconica: "¡No estáis preparados!"
+  },
+  {
+    nombre: "Hogger",
+    raza: "Gnoll",
+    faccion: "Defias",
+    nivel_peligro: 3,
+    localizacion: "Bosque de Elwynn",
+    rol: "Elite",
+    habilidades: ["Golpe brutal", "Grito de batalla"],
+    estadisticas: {
+      salud: 800,
+      poder: 200,
+      armadura: 25
+    },
+    tipo_ataque: "Cuerpo a cuerpo",
+    expansion: "Classic",
+    es_jefe: false,
+    dificultad_para_novatos: "Alta",
+    meme_status: "Legendario"
+  },
+  {
+    nombre: "Sylvanas Windrunner",
+    raza: "Elfa de Sangre Banshee",
+    faccion: "Horda (ex)",
+    nivel_peligro: 9,
+    localizacion: "Fauces de las Tinieblas",
+    rol: "Raid Boss",
+    habilidades: ["Flecha Oscura", "Grito de Banshee", "Control Mental"],
+    estadisticas: {
+      salud: 380000,
+      poder: 70000,
+      armadura: 80
+    },
+    tipo_ataque: "A distancia y Hechizos",
+    titulo: "Señora Oscura de los Renegados",
+    expansion: "Shadowlands",
+    es_jefe: true,
+    arma_legendaria: "Rae'shalare"
+  }
+]);
+print(`Total de criaturas: ${db.criaturas.countDocuments()}\n`);
+
+// ========================================
+// READ - CONSULTAS
+// ========================================
+
+print("=== CONSULTAS ===\n");
+
+print("--- Todas las criaturas ---");
+db.criaturas.find().forEach(c => {
+  print(`${c.nombre} (${c.raza}) - Peligro: ${c.nivel_peligro}`);
+});
+
+print("\n--- Criaturas del Bosque de Elwynn ---");
+db.criaturas.find({ localizacion: "Bosque de Elwynn" }).forEach(c => {
+  print(`${c.nombre} - ${c.sonido_caracteristico || c.rol}`);
+});
+
+print("\n--- Criaturas muy peligrosas (nivel > 8) ---");
+db.criaturas.find({ nivel_peligro: { $gt: 8 } }).forEach(c => {
+  print(`${c.nombre} - Peligro: ${c.nivel_peligro} - ${c.titulo || c.faccion}`);
+});
+
+print("\n--- Raid Bosses ---");
+db.criaturas.find({ es_jefe: true }).forEach(c => {
+  print(`${c.nombre} - ${c.localizacion} (${c.expansion})`);
+});
+
+print("\n--- Criaturas con más de 400k de salud ---");
+db.criaturas.find({ "estadisticas.salud": { $gt: 400000 } }).forEach(c => {
+  print(`${c.nombre} - HP: ${c.estadisticas.salud}`);
+});
+
+// ========================================
+// UPDATE - ACTUALIZACIÓN
+// ========================================
+
+print("\n=== ACTUALIZACIONES ===\n");
+
+// Agregar nueva habilidad a Deathwing
+print("--- Agregando habilidad a Deathwing ---");
+db.criaturas.updateOne(
+  { nombre: "Deathwing" },
+  { 
+    $push: { habilidades: "Colapso Terrestre" },
+    $set: { ultima_actualizacion: new Date() }
+  }
+);
+
+let deathwing = db.criaturas.findOne({ nombre: "Deathwing" });
+print(`Habilidades de Deathwing: ${deathwing.habilidades.join(", ")}\n`);
+
+// Incrementar peligro de criaturas del Bosque de Elwynn
+print("--- Evento: Invasión en Bosque de Elwynn ---");
+let resultado = db.criaturas.updateMany(
+  { localizacion: "Bosque de Elwynn" },
+  { 
+    $inc: { nivel_peligro: 1 },
+    $set: { evento_activo: "Invasión de la Legión Ardiente" }
+  }
+);
+
+print(`${resultado.modifiedCount} criaturas más peligrosas\n`);
+
+db.criaturas.find({ localizacion: "Bosque de Elwynn" }).forEach(c => {
+  print(`   ${c.nombre} - Nuevo peligro: ${c.nivel_peligro}`);
+});
+
+// Agregar campo a todas las criaturas
+print("\n--- Catalogando todas las criaturas ---");
+db.criaturas.updateMany(
+  {},
+  { $set: { catalogado: true, fecha_catalogo: new Date() } }
+);
+print("Todas las criaturas han sido catalogadas\n");
+
+// ========================================
+// ESTADÍSTICAS FINALES
+// ========================================
+
+print("=== ESTADÍSTICAS DEL BESTIARIO ===\n");
+
+let stats = db.criaturas.aggregate([
+  { $group: {
+      _id: null,
+      total: { $sum: 1 },
+      peligro_promedio: { $avg: "$nivel_peligro" },
+      jefes: { $sum: { $cond: ["$es_jefe", 1, 0] } },
+      salud_maxima: { $max: "$estadisticas.salud" }
+    }
+  }
+]).toArray()[0];
+
+print(`Total de criaturas: ${stats.total}`);
+print(`Peligro promedio: ${stats.peligro_promedio.toFixed(1)}`);
+print(`Raid Bosses: ${stats.jefes}`);
+print(`Salud máxima: ${stats.salud_maxima}`);
+
+print("\n=== BESTIARIO DE AZEROTH COMPLETADO ===");
