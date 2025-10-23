@@ -80,68 +80,60 @@ Cada criatura registrada posee los siguientes atributos principales:
 
 **Ejemplo de documento:**  
 ```json
-
 {
-
   "nombre": "Deathwing",
-
   "raza": "Dragón Negro",
-
   "faccion": "Aspecto de la Muerte",
-
   "nivel_peligro": 10,
-
   "localizacion": "Espina Negra",
-
   "habilidades": ["Cataclismo", "Aliento de Lava"],
-
   "estadisticas": { "salud": 500000, "armadura": 95 }
-
 }
+```
 
-7. Análisis Comparativo NoSQL
-7.1. Ventajas de MongoDB frente a SQL
+## 7. Análisis Comparativo NoSQL
 
-Estructura flexible:
+### 7.1. Ventajas de MongoDB frente a SQL
+
+**Estructura flexible:**
 Cada criatura posee campos únicos. En bases de datos relacionales, esto implicaría múltiples tablas y columnas nulas, así como operaciones JOIN adicionales.
 En MongoDB, cada documento contiene únicamente los campos que necesita, sin requerir relaciones explícitas.
 
-Objetos anidados:
+**Objetos anidados:**
 El subdocumento estadisticas permite agrupar atributos como salud, poder y armadura dentro de un mismo campo, evitando la necesidad de crear tablas auxiliares.
 
-Arreglos:
+**Arreglos:**
 MongoDB admite directamente arrays, como el caso del campo habilidades, que en un sistema relacional requeriría una tabla intermedia para representar relaciones de tipo muchos-a-muchos.
 
-7.2. Comparación con otros modelos NoSQL
+### 7.2. Comparación con otros modelos NoSQL
 
-Modelo Clave-Valor (Redis):
+**Modelo Clave-Valor (Redis):**
 Utilizado principalmente para el almacenamiento temporal de datos, como sesiones de jugadores o listas de usuarios en línea. Redis ofrece una latencia menor a 1 ms, siendo ideal para operaciones en tiempo real.
 
-Modelo de Grafos (Neo4j):
+**Modelo de Grafos (Neo4j):**
 Adecuado para representar relaciones entre personajes, por ejemplo:
 
 (Arthas) → [MATÓ] → (Uther)
 (Illidan) → [HERMANO_DE] → (Malfurion)
 
-MongoDB puede representar estas relaciones, pero no está optimizado para consultas de grafos complejos, donde Neo4j ofrece un mejor rendimiento y expresividad semántica.  
 MongoDB puede representar estas relaciones, pero no está optimizado para consultas de grafos complejos, donde Neo4j ofrece un mejor rendimiento y expresividad semántica.
 
-8. Caso de Estudio: Blizzard Entertainment
+## 8. Caso de Estudio: Blizzard Entertainment
 
 La empresa Blizzard Entertainment, desarrolladora de World of Warcraft y Hearthstone, emplea MongoDB en varios de sus proyectos debido a las siguientes razones:
 
-Estructuras de datos dinámicas: Las cartas de Hearthstone presentan atributos variables, que son fácilmente modeladas mediante documentos en MongoDB.
+- **Estructuras de datos dinámicas:** Las cartas de Hearthstone presentan atributos variables, que son fácilmente modeladas mediante documentos en MongoDB.
 
-Almacenamiento de mazos: Cada mazo de jugador puede representarse como un arreglo de cartas, lo que simplifica su consulta y actualización.
+- **Almacenamiento de mazos:** Cada mazo de jugador puede representarse como un arreglo de cartas, lo que simplifica su consulta y actualización.
 
-Procesamiento en tiempo real: Las partidas requieren actualizaciones constantes del estado del juego, que MongoDB maneja eficientemente mediante operaciones como updateOne().
+- **Procesamiento en tiempo real:** Las partidas requieren actualizaciones constantes del estado del juego, que MongoDB maneja eficientemente mediante operaciones como `updateOne()`.
 
-Escalabilidad horizontal: MongoDB permite distribuir los datos entre varios nodos, garantizando alta disponibilidad ante grandes volúmenes de jugadores activos.
+- **Escalabilidad horizontal:** MongoDB permite distribuir los datos entre varios nodos, garantizando alta disponibilidad ante grandes volúmenes de jugadores activos.
 
-9. Conclusiones
+## 9. Conclusiones
 
-El proyecto Bestiario de Azeroth demuestra la versatilidad y eficiencia de MongoDB en la representación de información compleja y heterogénea, como la asociada a criaturas con atributos variables.
+- El proyecto Bestiario de Azeroth demuestra la versatilidad y eficiencia de MongoDB en la representación de información compleja y heterogénea, como la asociada a criaturas con atributos variables.
 
-El modelo documental de MongoDB simplifica el almacenamiento, reduce la redundancia y elimina las limitaciones de los modelos relacionales.
+- El modelo documental de MongoDB simplifica el almacenamiento, reduce la redundancia y elimina las limitaciones de los modelos relacionales.
 
-La integración de MongoDB con herramientas como MongoDB Atlas y Visual Studio Code proporciona un entorno de desarrollo ágil y escalable, adecuado tanto para aplicaciones académicas como para la industria de los videojuegos.
+- La integración de MongoDB con herramientas como MongoDB Atlas y Visual Studio Code proporciona un entorno de desarrollo ágil y escalable, adecuado tanto para aplicaciones académicas como para la industria de los videojuegos.
