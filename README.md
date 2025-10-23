@@ -1,5 +1,5 @@
 # Bestiario de Azeroth - Implementación con MongoDB
-**Autor:** Ronald Puruncajas  
+**Nombre:** Ronald Puruncajas  
 **Fecha:** 22 de octubre de 2025  
 
 ## 1. Introducción
