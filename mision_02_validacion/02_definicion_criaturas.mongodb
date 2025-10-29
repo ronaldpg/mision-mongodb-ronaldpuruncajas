@@ -1,0 +1,69 @@
+// comando drop para borrar la colección si ya fue creada
+db.criaturas.drop();
+
+// Crear colección criaturas con validator
+db.createCollection("criaturas", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["nombre", "habitat", "nivel_peligro", "es_legendaria", "habilidades", "ficha_veterinaria", "id_guardian"],
+      additionalProperties: true,
+      properties: {
+        nombre: {
+          bsonType: "string",
+          description: "Nombre de la criatura en formato string"
+        },
+        habitat: {
+          bsonType: "string",
+          description: "Habitat en formato string"
+        },
+        nivel_peligro: {
+          bsonType: ["int", "long"],
+          minimum: 1,
+          maximum: 10,
+          description: "Nivel de peligro en formato entero entre 1 y 10"
+        },
+        es_legendaria: {
+          bsonType: "bool",
+          description: "Marcar con booleano si esque es legendario o no"
+        },
+        habilidades: {
+          bsonType: "array",
+          minItems: 1,
+          uniqueItems: true,
+          description: "Array de strings con las habilidades de la criatura con minimo una habilidad",
+          items: {
+            bsonType: "string"
+          }
+        },
+        ficha_veterinaria: {
+          bsonType: "object",
+          required: ["salud", "ultima_revision"],
+          additionalProperties: false,
+          description: "Subdocumento con la ficha veterinaria de la criatura",
+          properties: {
+            salud: {
+              bsonType: "string",
+              enum: ["Óptima", "Regular", "Crítica"],
+              description: "Estado de salud en formato string que se categoriza en óptima, regular o crítica"
+            },
+            ultima_revision: {
+              bsonType: "date",
+              description: "Fecha de la última revisión veterinaria en formato date"
+            },
+            notas: {
+              bsonType: "string",
+              description: "Tomar notas opciones para la ficha veterinaria en formato string"
+            }
+          }
+        },
+        id_guardian: {
+          bsonType: "objectId",
+          description: "Referencia al guardián responsable en formato ObjectId"
+        }
+      }
+    }
+  },
+  validationLevel: "moderate",
+  validationAction: "error"
+});

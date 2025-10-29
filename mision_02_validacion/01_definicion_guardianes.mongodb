@@ -1,0 +1,57 @@
+// Drop para borrar la colección si ya fue creada
+db.guardianes.drop();
+
+// Crear colección guardianes con validator
+db.createCollection("guardianes", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["nombre", "rango", "password_acceso", "inventario"],
+      additionalProperties: true,
+      properties: {
+        nombre: {
+          bsonType: "string",
+          description: "Nombre del guardián en formato string"
+        },
+        rango: {
+          bsonType: "string",
+          enum: ["Aprendiz", "Maestro", "Gran Maestro"],
+          description: "Rango en formato string para Aprendiz, Maestro y Gran Maestro"
+        },
+        password_acceso: {
+          bsonType: "string",
+          pattern: "^(?=.{8,})(?=.*[A-Z])(?=.*\\d).*$",
+          description: "Password con los requisitos mínimos de al menos 8 caracteres, una letra mayúscula y un número"
+        },
+        nivel: {
+          bsonType: ["int", "long"],
+          minimum: 1,
+          maximum: 99,
+          description: "Nivel en un formato entero entre 1 y 99"
+        },
+        inventario: {
+          bsonType: "array",
+          description: "Array de objetos que representan el inventario del guardián",
+          items: {
+            bsonType: "object",
+            required: ["nombre_item", "cantidad"],
+            additionalProperties: false,
+            properties: {
+              nombre_item: {
+                bsonType: "string",
+                description: "Nombre del item en formato string"
+              },
+              cantidad: {
+                bsonType: ["int", "long"],
+                minimum: 1,
+                description: "Cantidad en formato entero >= 1"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  validationLevel: "moderate",
+  validationAction: "error"
+});

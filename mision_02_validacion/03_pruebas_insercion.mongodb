@@ -1,0 +1,70 @@
+// Primero se realiza un Insert válido donde en este caso el guardian cumple con todos los requisitos del schema
+const resultadoValido = db.guardianes.insertOne({
+  nombre: "Rendolf",
+  rango: "Aprendiz",
+  password_acceso: "Admin123",
+  nivel: NumberInt(76),
+  inventario: [
+    { nombre_item: "Espada", cantidad: NumberInt(1) },
+    { nombre_item: "Ropajes", cantidad: NumberInt(4) }
+  ]
+});
+
+// Segundo se realiza el Insert inválido donde el guardian no cumple con los requisitos del schema
+// En este caso se intentara insertar un guardián con un rango no válido y una contraseña que no cumple con los requisitos
+try {
+  db.guardianes.insertOne({
+    nombre: "Corrupto",
+    rango: "Maestro de Gremio", // se inserta un rango no valido
+    password_acceso: "wuenas", // se usara una contraseña que no cumple con los requisitos
+    inventario: [
+      { nombre_item: "Arañas", cantidad: 999 }
+    ]
+  });
+} catch (e) {
+  // en este caso se espera un error de validación con el codigo de error 121
+  // Un posible mensaje de error seria el seguiente:
+  // WriteError({
+  //   "index" : 0,
+  //   "code" : 121,
+  //   "errmsg" : "Document failed validation",
+  //   "op" : { ... }
+  // })
+  print("Se espera un error de validación al insertar guardian inválido:", e);
+}
+
+// -------------- INSERCION DE CRIATURAS --------------
+// primero se inserta un guardián válido para usar su _id en la criatura
+db.criaturas.insertOne({
+  nombre: "Troll",
+  habitat: "Montañas Rocosas",
+  nivel_peligro: NumberInt(4),
+  es_legendaria: false,
+  habilidades: ["Garras", "Fuerza Bruta"],
+  ficha_veterinaria: {
+    salud: "Regular",
+    ultima_revision: new Date("2025-10-29"),
+    notas: "Requiere dieta especial"
+  },
+  id_guardian: db.guardianes.findOne({nombre: "Rendolf"})._id  // obtener el _id del guardián insertado previamente
+});
+
+// despues se intenta insertar una criatura inválida
+try {
+  db.criaturas.insertOne({
+    nombre: "Sombra",
+    habitat: "Bosque Negro",
+    nivel_peligro: 5,
+    es_legendaria: false,
+    habilidades: [], // falta habilidad obligatoria
+    ficha_veterinaria: {
+      // aqui falta el campo obligatorio que marca la salud
+      ultima_revision: new Date()
+    },
+    id_guardian: db.guardianes.findOne({nombre: "Rendolf"})._id
+  });
+} catch (e) {
+  // El mensaje de error esperado seria:
+  // WriteError({ "index": 0, "code": 121, "errmsg": "Document failed validation", "op": {...} })
+  print("Se espera un error de validación al insertar criatura inválida:", e);
+}
